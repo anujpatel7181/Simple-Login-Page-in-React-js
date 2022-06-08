@@ -1,12 +1,12 @@
 import React from "react";
 import Footer from "./Footer";
 import HeroImage from "./HeroImages/HeroImage";
-import Navbar from "./Navbar";
+// import Navbar from "./Navbar";
 
 const Home = () => {
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <HeroImage />
       <Footer />
     </div>
