@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import Project from "./Components/Project/Projects";
 import About from "./Components/About/Aabout";
-import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import Contact from "./Components/Contact/Contact";
 import Home from "./Components/Home";
-import SpeechRecognitin, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
+import { useSpeechRecognition } from "react-speech-recognition";
 import "./Components/Navbar.css";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaMicrophone } from "react-icons/fa";
+import SpeechRecognition from "react-speech-recognition";
 
 function App() {
   const [click, setClick] = useState(false);
@@ -32,10 +37,32 @@ function App() {
   const { transcript } = useSpeechRecognition({ commands });
   console.log({ transcript });
   const [redirectUrl, setRedirectUrl] = useState("");
+  const pages = ["home", "project", "about", "contact"];
+  const urls = {
+    home: "/",
+    project: "/project",
+    about: "/about",
+    contact: "/contact",
+  };
+
+  if (!SpeechRecognition.browserSupportsSpeechRecognition) {
+    return null;
+  }
+
+  let redirect = "";
+
+  if (redirectUrl) {
+    if (pages.includes(redirectUrl)) {
+      redirect = <Redirect to={urls[redirectUrl]} />;
+    } else {
+      redirect = <p>Couldn't find page : {redirectUrl}</p>;
+    }
+  }
 
   return (
     <div>
       <Router>
+        {redirect}
         <div className={color ? "header header-bg" : "header"}>
           <Link to="/">
             <h1>Portfolio.</h1>
@@ -52,6 +79,13 @@ function App() {
             </li>
             <li>
               <Link to="/contact">Contact</Link>
+            </li>
+            <li>
+              <FaMicrophone
+                size={20}
+                style={{ color: "#fff" }}
+                onClick={SpeechRecognition.startListening}
+              />
             </li>
           </ul>
           <div className="hamburger" onClick={handleClick}>
